@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mam do Ciebie pytanie... 🌸</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: #fdf6f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .petals {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .petal {
+    position: absolute;
+    width: 12px;
+    height: 16px;
+    background: #f9b8c4;
+    border-radius: 50% 0 50% 0;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0.7; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+
+  .card {
+    background: white;
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 40px rgba(240, 160, 170, 0.15);
+    position: relative;
+    z-index: 1;
+  }
+
+  .step { display: none; }
+  .step.active { display: block; }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #2a1a1a;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    color: #9e7e7e;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .emoji-big {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-yes {
+    background: #e8647a;
+    color: white;
+    border: none;
+    padding: 0.75rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-yes:hover { background: #d04e64; transform: scale(1.03); }
+  .btn-yes:active { transform: scale(0.97); }
+
+  .btn-no {
+    background: transparent;
+    color: #c09090;
+    border: 1.5px solid #e8c5c5;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn-option {
+    background: #fff5f7;
+    border: 1.5px solid #f0ccd2;
+    color: #7a3a45;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 400;
+  }
+
+  .btn-option:hover {
+    background: #fce0e5;
+    border-color: #e8647a;
+    color: #c43050;
+    transform: translateY(-1px);
+  }
+
+  .btn-option.selected {
+    background: #e8647a;
+    border-color: #e8647a;
+    color: white;
+  }
+
+  .time-input-wrap {
+    margin: 1.5rem auto 0;
+    max-width: 200px;
+  }
+
+  .time-input-wrap input[type="time"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    border: 1.5px solid #f0ccd2;
+    font-size: 1.3rem;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    color: #2a1a1a;
+    background: #fff5f7;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .time-input-wrap input[type="time"]:focus {
+    border-color: #e8647a;
+  }
+
+  .btn-submit {
+    background: #e8647a;
+    color: white;
+    border: none;
+    padding: 0.8rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-submit:hover { background: #d04e64; transform: scale(1.02); }
+  .btn-submit:disabled { background: #e0b0ba; cursor: not-allowed; transform: none; }
+
+  .success-msg {
+    font-size: 0.9rem;
+    color: #9e7e7e;
+    margin-top: 1rem;
+    min-height: 1.2em;
+  }
+
+  .confetti-wrap {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .conf-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+    animation: confetti-fall 3s ease-in forwards;
+  }
+
+  @keyframes confetti-fall {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  .divider {
+    width: 40px;
+    height: 2px;
+    background: #f0ccd2;
+    margin: 1.25rem auto;
+    border-radius: 2px;
+  }
+
+  .summary-box {
+    background: #fff5f7;
+    border: 1px solid #f0ccd2;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+    text-align: left;
+    font-size: 0.95rem;
+    color: #5a2a35;
+    line-height: 1.8;
+  }
+
+  .summary-box strong {
+    color: #e8647a;
+    font-weight: 500;
+  }
+
+  @media (max-width: 420px) {
+    .card { padding: 2rem 1.5rem; }
+    h1 { font-size: 1.6rem; }
+    .options-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="petals" id="petals"></div>
+<div class="confetti-wrap" id="confetti"></div>
+
+<div class="card">
+
+  <!-- KROK 1: Zaproszenie na randkę -->
+  <div class="step active" id="step1">
+    <span class="emoji-big">🌸</span>
+    <h1>pójdziesz ze mną<br>na randkę?</h1>
+    <p class="subtitle">mam do Ciebie pewne pytanie...</p>
+    <div class="btn-group">
+      <button class="btn-yes" onclick="goYes()">Tak! 💕</button>
+      <button class="btn-no" id="btnNo" onclick="shrinkNo()">Nie</button>
+    </div>
+  </div>
+
+  <!-- KROK 2: Reakcja na TAK + pytanie o poniedziałek -->
+  <div class="step" id="step2">
+    <span class="emoji-big">🎉</span>
+    <h1>YEEEY!</h1>
+    <p class="subtitle">tak się cieszę, nie masz pojęcia 🥹</p>
+    <div class="divider"></div>
+    <p style="font-size:1rem; color:#4a2a2a; line-height:1.5;">
+      czy <strong style="color:#e8647a;">poniedziałek, 29 czerwca</strong> będzie ok?
+    </p>
+    <div class="btn-group">
+      <button class="btn-yes" onclick="goStep(3)">pasuje! ✅</button>
+      <button class="btn-option" style="margin-top:0; padding: 0.75rem 1.5rem; border-radius:50px;" onclick="dateMiss()">Nie mogę tego dnia 😢</button>
+    </div>
+    <p class="success-msg" id="dateMissMsg"></p>
+  </div>
+
+  <!-- KROK 3: Kręgle? -->
+  <div class="step" id="step3">
+    <span class="emoji-big">🎳</span>
+    <h1>Co powiesz na kręgle?</h1>
+    <p class="subtitle">Mam nadzieję, że lubisz przegrywać 🤪</p>
+    <div class="btn-group">
+      <button class="btn-yes" onclick="goStep(4)">Oki doki! 🎳</button>
+      <button class="btn-option" style="margin-top:0; padding: 0.75rem 1.5rem; border-radius:50px;" onclick="goStep(4)">Spróbuj mnie pokonać 😄</button>
+    </div>
+  </div>
+
+  <!-- KROK 4: Godzina -->
+  <div class="step" id="step4">
+    <span class="emoji-big">🕐</span>
+    <h1>Na którą godzinę?</h1>
+    <p class="subtitle">Wybierz godzinę spotkania</p>
+    <div class="time-input-wrap">
+      <input type="time" id="timeInput" value="18:00" />
+    </div>
+    <br>
+    <button class="btn-submit" id="submitBtn" onclick="submitAnswer()">Gotowe! 💌</button>
+    <p class="success-msg" id="submitMsg"></p>
+  </div>
+
+  <!-- KROK 5: Podsumowanie -->
+  <div class="step" id="step5">
+    <span class="emoji-big">💌</span>
+    <h1>Wszystko gotowe!</h1>
+    <p class="subtitle">Nie mogę się już doczekać 🥰</p>
+    <div class="summary-box" id="summaryBox"></div>
+  </div>
+
+</div>
+
+<script>
+const FORMSPREE_URL = "https://formspree.io/f/xpqgpbjl"; 
+
+let answers = {
+  randka: "Tak",
+  data: "Poniedziałek 29 czerwca",
+  aktywnosc: "Kręgle",
+  godzina: ""
+};
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+}
+
+function goYes() {
+  launchConfetti();
+  setTimeout(() => showStep(2), 400);
+}
+
+let noScale = 1;
+function shrinkNo() {
+  noScale = Math.max(0, noScale - 0.25);
+  const btn = document.getElementById('btnNo');
+  if (noScale <= 0) {
+    btn.style.opacity = '0';
+    btn.style.pointerEvents = 'none';
+  } else {
+    btn.style.transform = `scale(${noScale})`;
+    btn.style.opacity = noScale;
+  }
+}
+
+function goStep(n) {
+  showStep(n);
+}
+
+function dateMiss() {
+  document.getElementById('dateMissMsg').textContent = "Napisz mi kiedy możesz — ustalimy inny termin! 💬";
+}
+
+function submitAnswer() {
+  const time = document.getElementById('timeInput').value;
+  if (!time) { alert('Wybierz godzinę!'); return; }
+  answers.godzina = time;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Wysyłam...';
+
+  const formData = new FormData();
+  formData.append('Randka', answers.randka);
+  formData.append('Data', answers.data);
+  formData.append('Aktywność', answers.aktywnosc);
+  formData.append('Godzina', answers.godzina);
+
+  fetch(FORMSPREE_URL, {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(r => {
+    if (r.ok) {
+      launchConfetti();
+      showSummary();
+    } else {
+      showSummary(); 
+    }
+  })
+  .catch(() => {
+    showSummary(); 
+  });
+}
+
+function showSummary() {
+  document.getElementById('summaryBox').innerHTML =
+    `🌸 <strong>Randka:</strong> ${answers.randka}<br>
+     📅 <strong>Kiedy:</strong> ${answers.data}<br>
+     🎳 <strong>Co robimy:</strong> ${answers.aktywnosc}<br>
+     🕐 <strong>Godzina:</strong> ${answers.godzina}`;
+  setTimeout(() => showStep(5), 300);
+}
+
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  const colors = ['#f9b8c4','#e8647a','#ffd6de','#fca5a5','#fde68a','#bbf7d0'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'conf-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.top = '-10px';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    piece.style.animationDelay = (Math.random() * 0.8) + 's';
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    container.appendChild(piece);
+    setTimeout(() => piece.remove(), 4000);
+  }
+}
+
+
+(function spawnPetals() {
+  const container = document.getElementById('petals');
+  const colors = ['#f9b8c4','#fde0e6','#f9c8d4','#fceef1'];
+  setInterval(() => {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDuration = (4 + Math.random() * 6) + 's';
+    p.style.animationDelay = '0s';
+    p.style.width = (8 + Math.random() * 10) + 'px';
+    p.style.height = (10 + Math.random() * 14) + 'px';
+    container.appendChild(p);
+    setTimeout(() => p.remove(), 10000);
+  }, 600);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1b0f1f">
+<title>Kalendarz adwentowy 🎄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,500&family=Dancing+Script:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noc: #1b0f1f;
+    --noc2: #2d1530;
+    --zloto: #f3c969;
+    --zloto2: #c9932f;
+    --krem: #fff6ea;
+    --czerwien: #c8323f;
+    --roz: #ff8fab;
+    --tekst: #fff6ea;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { min-height: 100%; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #5a1f3f 0%, transparent 60%),
+      radial-gradient(900px 500px at 100% 110%, #13312a 0%, transparent 60%),
+      linear-gradient(180deg, var(--noc2), var(--noc));
+    background-attachment: fixed;
+    color: var(--tekst);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Śnieg ---------- */
+  #snieg { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+  /* ---------- Lampki ---------- */
+  .lampki {
+    position: relative; z-index: 2;
+    display: flex; justify-content: space-between;
+    padding: 0 6px; height: 46px; overflow: hidden;
+  }
+  .lampki::before {
+    content: ""; position: absolute; left: -5%; right: -5%; top: -30px; height: 50px;
+    border-bottom: 2px solid #3d2a20; border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  }
+  .lampka {
+    position: relative; width: 11px; height: 18px; margin-top: 18px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    background: var(--c); box-shadow: 0 0 14px 3px var(--c);
+    animation: migaj 1.6s ease-in-out infinite; animation-delay: var(--d);
+  }
+  .lampka::before {
+    content: ""; position: absolute; top: -5px; left: 2px; width: 7px; height: 6px;
+    background: #4b3a2a; border-radius: 2px;
+  }
+  .lampka:nth-child(odd) { margin-top: 10px; }
+  @keyframes migaj {
+    0%, 100% { opacity: 1; filter: brightness(1.2); }
+    50% { opacity: .35; box-shadow: 0 0 4px 1px var(--c); filter: brightness(.7); }
+  }
+
+  /* ---------- Nagłówek ---------- */
+  header { position: relative; z-index: 2; text-align: center; padding: 4px 16px 18px; }
+  .dla {
+    font-family: 'Dancing Script', cursive; font-size: clamp(1.4rem, 5vw, 2rem);
+    color: var(--roz); animation: wjazd .9s .1s both;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif; font-weight: 800;
+    font-size: clamp(2rem, 8vw, 3.6rem); line-height: 1.05; letter-spacing: -.5px;
+    background: linear-gradient(100deg, #f3c969 0%, #fff3c9 25%, #f3c969 50%, #c9932f 75%, #f3c969 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: wjazd .9s .25s both, blysk 6s linear infinite;
+    filter: drop-shadow(0 2px 12px rgba(243, 201, 105, .25));
+  }
+  @keyframes blysk { to { background-position: -250% 0; } }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+    padding: 8px 16px; border-radius: 999px;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    font-size: .9rem; color: #f5dfe6; animation: wjazd .9s .4s both;
+  }
+  .status .serce { display: inline-block; animation: bicie 1.2s ease-in-out infinite; }
+  @keyframes bicie { 0%,100% { transform: scale(1); } 15% { transform: scale(1.3); } 30% { transform: scale(1); } 45% { transform: scale(1.18); } }
+  @keyframes wjazd { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Siatka okienek ---------- */
+  main { position: relative; z-index: 2; padding: 0 16px 40px; }
+  .kalendarz {
+    max-width: 920px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    padding: 14px; border-radius: 22px;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,.025) 0 10px, transparent 10px 20px),
+      linear-gradient(160deg, #6b1d2c, #3e0f1d);
+    box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 0 0 2px rgba(243,201,105,.35), inset 0 0 0 7px #4a1322, inset 0 0 0 8px rgba(243,201,105,.25);
+  }
+  @media (min-width: 640px) { .kalendarz { grid-template-columns: repeat(6, 1fr); gap: 16px; padding: 22px; } }
+
+  .okienko {
+    position: relative; aspect-ratio: 3 / 4; border: 0; background: none; padding: 0;
+    perspective: 700px; cursor: pointer; font: inherit; color: inherit;
+    opacity: 0; animation: pojaw .6s cubic-bezier(.2,.9,.3,1.3) forwards; animation-delay: var(--opoz);
+  }
+  @keyframes pojaw { from { opacity: 0; transform: scale(.6) translateY(20px) rotate(-6deg); } to { opacity: 1; transform: none; } }
+  .okienko:focus-visible { outline: 3px solid var(--zloto); outline-offset: 3px; border-radius: 12px; }
+
+  .wnetrze {
+    position: absolute; inset: 0; border-radius: 12px; overflow: hidden;
+    background: radial-gradient(circle at 50% 40%, #fff3c9 0%, #f3c969 35%, #8a4b1c 100%);
+    box-shadow: inset 0 4px 14px rgba(0,0,0,.55);
+    display: grid; place-items: center;
+  }
+  .wnetrze .ikona { font-size: clamp(1.6rem, 6vw, 2.4rem); transform: scale(0); transition: transform .5s .35s cubic-bezier(.2,1.6,.4,1); filter: drop-shadow(0 3px 6px rgba(0,0,0,.35)); }
+  .wnetrze .maly-nr { position: absolute; bottom: 5px; right: 8px; font-size: .7rem; font-weight: 600; color: #5a2d0c; opacity: .7; }
+  .otwarte .wnetrze .ikona { transform: scale(1); animation: unos 2.6s 1s ease-in-out infinite; }
+  @keyframes unos { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.06); } }
+
+  .drzwi {
+    position: absolute; inset: 0; transform-origin: left center; transform-style: preserve-3d;
+    transition: transform .9s cubic-bezier(.3,1.4,.5,1);
+  }
+  .otwarte .drzwi { transform: rotateY(-112deg); }
+  .przod, .tyl { position: absolute; inset: 0; border-radius: 12px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .przod {
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,255,255,.25), transparent 45%),
+      radial-gradient(rgba(255,255,255,.09) 1.2px, transparent 1.6px) 0 0 / 10px 10px,
+      var(--kolor);
+    border: 2px solid rgba(243,201,105,.55);
+    box-shadow: 0 6px 16px rgba(0,0,0,.35), inset 0 -6px 12px rgba(0,0,0,.25);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    transition: transform .25s, box-shadow .25s;
+  }
+  .przod::after { /* klamka */
+    content: ""; position: absolute; right: 7px; top: 50%; width: 5px; height: 14px; margin-top: -7px;
+    border-radius: 3px; background: linear-gradient(var(--zloto), var(--zloto2)); box-shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+  .tyl { transform: rotateY(180deg); background: linear-gradient(90deg, #2b0b13, #4a1322); border: 2px solid rgba(243,201,105,.3); }
+  .numer {
+    font-family: 'Playfair Display', serif; font-weight: 800; font-size: clamp(1.6rem, 7vw, 2.4rem);
+    color: var(--krem); text-shadow: 0 2px 0 rgba(0,0,0,.25), 0 0 18px rgba(255,255,255,.25); line-height: 1;
+  }
+  .ozdoba { font-size: clamp(.8rem, 3vw, 1rem); opacity: .9; }
+  .klodka { position: absolute; top: 6px; left: 8px; font-size: .75rem; opacity: .75; }
+
+  @media (hover: hover) {
+    .okienko:not(.otwarte):hover .przod { transform: translateZ(14px) rotateY(-8deg); box-shadow: 10px 14px 24px rgba(0,0,0,.45); }
+  }
+  .okienko.dzis .przod { animation: poswiata 1.8s ease-in-out infinite; }
+  @keyframes poswiata {
+    0%,100% { box-shadow: 0 0 0 0 rgba(243,201,105,.0), 0 6px 16px rgba(0,0,0,.35); }
+    50% { box-shadow: 0 0 22px 6px rgba(243,201,105,.75), 0 6px 16px rgba(0,0,0,.35); }
+  }
+  .okienko.dzis::before {
+    content: "dziś!"; position: absolute; top: -9px; left: 50%; transform: translateX(-50%); z-index: 3;
+    background: var(--zloto); color: #4a1322; font-size: .62rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 999px; box-shadow: 0 2px 6px rgba(0,0,0,.4); animation: podskok 1s ease-in-out infinite;
+  }
+  @keyframes podskok { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -4px); } }
+  .okienko.zamkniete .przod { filter: saturate(.75) brightness(.9); }
+  .okienko.trzes { opacity: 1; animation: trzes .5s; }
+  @keyframes trzes { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px) rotate(-3deg); } 40% { transform: translateX(6px) rotate(3deg); } 60% { transform: translateX(-4px) rotate(-2deg); } 80% { transform: translateX(4px) rotate(1deg); } }
+
+  footer { position: relative; z-index: 2; text-align: center; padding: 0 16px 34px; font-family: 'Dancing Script', cursive; font-size: 1.25rem; color: rgba(255,246,234,.55); }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 50;
+    transform: translate(-50%, calc(100% + 60px)); opacity: 0; transition: transform .45s cubic-bezier(.2,1.4,.4,1), opacity .3s;
+    background: var(--krem); color: #4a1322; font-weight: 500; padding: 12px 20px; border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4); max-width: calc(100% - 32px); text-align: center;
+  }
+  .toast.pokaz { transform: translate(-50%, 0); opacity: 1; }
+
+  /* ---------- Cząsteczki ---------- */
+  .czastka { position: fixed; z-index: 60; pointer-events: none; left: 0; top: 0; will-change: transform, opacity; user-select: none; }
+
+  /* ---------- Modal ---------- */
+  .modal {
+    position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px;
+    background: rgba(15, 5, 12, .0); backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0);
+    visibility: hidden; transition: background .4s, backdrop-filter .4s, visibility 0s .4s;
+  }
+  .modal.otwarty { visibility: visible; background: rgba(15, 5, 12, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .4s, backdrop-filter .4s; }
+  .karta {
+    position: relative; width: min(460px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto;
+    background: linear-gradient(180deg, #fffaf3, #fbeee0); color: #3a1820;
+    border-radius: 24px; padding: 26px 22px 24px; text-align: center;
+    box-shadow: 0 40px 100px rgba(0,0,0,.6), inset 0 0 0 1px rgba(201,147,47,.35);
+    transform: scale(.4) rotate(-8deg) translateY(60px); opacity: 0;
+    transition: transform .6s cubic-bezier(.2,1.5,.4,1), opacity .3s;
+  }
+  .modal.otwarty .karta { transform: none; opacity: 1; }
+  .karta::before { /* wstążka */
+    content: ""; position: absolute; top: 0; left: 50%; width: 34px; height: 44px; margin-left: -17px;
+    background: linear-gradient(90deg, #a5232f, var(--czerwien), #a5232f);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+  }
+  .zamknij {
+    position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; border: 0;
+    background: rgba(58,24,32,.08); color: #3a1820; font-size: 1.1rem; cursor: pointer; transition: transform .2s, background .2s;
+  }
+  .zamknij:hover { transform: rotate(90deg); background: rgba(58,24,32,.15); }
+  .karta .dzien { margin-top: 18px; font-size: .78rem; letter-spacing: 2px; text-transform: uppercase; color: var(--zloto2); font-weight: 600; }
+  .karta h2 { font-family: 'Playfair Display', serif; font-size: 1.7rem; margin: 4px 0 16px; line-height: 1.15; }
+  .karta .opis { margin-top: 16px; font-size: 1rem; line-height: 1.55; color: #5b3a40; }
+  .karta > *:not(.zamknij) { animation: wjazd .5s backwards; }
+  .karta > *:nth-child(3) { animation-delay: .15s; } .karta > *:nth-child(4) { animation-delay: .25s; }
+  .karta > *:nth-child(5) { animation-delay: .4s; } .karta > *:nth-child(6) { animation-delay: .55s; }
+
+  /* Zdjęcie – polaroid wywołujący się */
+  .polaroid {
+    display: inline-block; background: #fff; padding: 10px 10px 34px; border-radius: 4px;
+    box-shadow: 0 14px 30px rgba(58,24,32,.25); transform: rotate(-2.5deg); max-width: 100%;
+  }
+  .polaroid img { display: block; max-width: 100%; max-height: 52dvh; border-radius: 2px; background: #2a1a1a; }
+  .polaroid img.wywoluj { animation: wywolaj 3s ease-out both; }
+  @keyframes wywolaj {
+    0% { filter: brightness(2.4) sepia(1) blur(8px) contrast(.4); opacity: .4; }
+    60% { filter: brightness(1.2) sepia(.4) blur(1px) contrast(.9); opacity: 1; }
+    100% { filter: none; }
+  }
+
+  /* Wiadomość głosowa */
+  .glos { display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 999px; padding: 10px 18px 10px 10px; box-shadow: 0 8px 24px rgba(58,24,32,.15); }
+  .graj {
+    flex: none; width: 54px; height: 54px; border-radius: 50%; border: 0; cursor: pointer;
+    background: linear-gradient(140deg, #ff8fab, var(--czerwien)); color: #fff; font-size: 1.2rem;
+    box-shadow: 0 6px 16px rgba(200,50,63,.45); position: relative; transition: transform .15s;
+  }
+  .graj:active { transform: scale(.92); }
+  .graj.gra::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--roz); animation: fala 1.4s ease-out infinite; }
+  @keyframes fala { from { transform: scale(.9); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+  .fale { flex: 1; display: flex; align-items: center; gap: 3px; height: 44px; cursor: pointer; }
+  .fale span { flex: 1; min-width: 2px; height: var(--h); border-radius: 3px; background: #e9cdd3; transition: background .2s; transform-origin: center; }
+  .fale span.przeszlo { background: var(--czerwien); }
+  .gra + .fale span { animation: drgaj .9s ease-in-out infinite alternate; animation-delay: var(--d); }
+  @keyframes drgaj { from { transform: scaleY(.45); } to { transform: scaleY(1.1); } }
+  .czas { flex: none; font-variant-numeric: tabular-nums; font-size: .85rem; color: #8a6168; min-width: 38px; }
+
+  /* Filmik */
+  .film { border-radius: 16px; overflow: hidden; background: #000; box-shadow: 0 14px 30px rgba(58,24,32,.3); }
+  .film video { display: block; width: 100%; max-height: 56dvh; }
+
+  /* Liścik */
+  .list {
+    position: relative; text-align: left; padding: 22px 20px 20px; border-radius: 6px;
+    background: repeating-linear-gradient(transparent 0 29px, rgba(201,147,47,.22) 29px 30px), #fffdf8;
+    box-shadow: 0 10px 26px rgba(58,24,32,.15); transform: rotate(1deg);
+    font-family: 'Dancing Script', cursive; font-size: 1.45rem; line-height: 30px; color: #4a1f2a; min-height: 160px;
+  }
+  .list .kursor { display: inline-block; width: 2px; height: 1.1em; background: #4a1f2a; vertical-align: -3px; animation: mrug .8s steps(1) infinite; }
+  @keyframes mrug { 50% { opacity: 0; } }
+  .list .podpis { display: block; text-align: right; margin-top: 10px; opacity: 0; transition: opacity 1s; }
+  .list .podpis.widac { opacity: 1; }
+
+  .brak { padding: 22px 16px; border: 2px dashed #e0b9c0; border-radius: 16px; color: #8a6168; font-size: .92rem; line-height: 1.5; background: #fff; }
+  .brak code { background: #f6e3e7; padding: 1px 6px; border-radius: 4px; }
+  .brak b { font-size: 2rem; display: block; margin-bottom: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+<canvas id="snieg"></canvas>
+<div class="lampki" id="lampki" aria-hidden="true"></div>
+
+<header>
+  <div class="dla" id="dla">dla Ciebie</div>
+  <h1>Kalendarz<br>adwentowy</h1>
+  <div class="status" id="status"></div>
+</header>
+
+<main>
+  <div class="kalendarz" id="kalendarz"></div>
+</main>
+<footer id="stopka"></footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-tytul">
+  <div class="karta" id="karta"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="tresci.js"></script>
+<script>
+(() => {
+  const S = Object.assign({ imie: "Kochanie", rok: new Date().getFullYear(), podpis: "❤️" }, typeof USTAWIENIA !== "undefined" ? USTAWIENIA : {});
+  const DANE = {};
+  (typeof NIESPODZIANKI !== "undefined" ? NIESPODZIANKI : []).forEach(n => DANE[n.dzien] = n);
+
+  const params = new URLSearchParams(location.search);
+  const PODGLAD = params.has("podglad");           // ?podglad – odblokowuje wszystkie okienka (do testów)
+
+  const IKONY = { zdjecie: "📸", glosowka: "🎙️", filmik: "🎬", list: "💌" };
+  const OZDOBY = ["❄️", "⭐", "🎄", "🔔", "🎁", "❤️", "🍪", "☃️"];
+  const KOLORY = [
+    "linear-gradient(150deg,#d33a48,#8e1b27)",
+    "linear-gradient(150deg,#2f7a55,#164532)",
+    "linear-gradient(150deg,#c98d2f,#86561a)",
+    "linear-gradient(150deg,#b8486f,#6d1f3c)",
+    "linear-gradient(150deg,#3c5f8f,#1e3456)",
+    "linear-gradient(150deg,#a52f3b,#5e1520)",
+  ];
+  const KOLEJNOSC = [7,15,2,21,11,4,18,9,24,13,1,20,6,16,10,3,23,12,19,5,14,22,8,17];
+
+  // ---------- pamięć otwartych ----------
+  const KLUCZ = "adwent-otwarte-" + S.rok;
+  let otwarte = new Set();
+  try { otwarte = new Set(JSON.parse(localStorage.getItem(KLUCZ) || "[]")); } catch (e) {}
+  const zapisz = () => { try { localStorage.setItem(KLUCZ, JSON.stringify([...otwarte])); } catch (e) {} };
+
+  // ---------- daty ----------
+  const dzisiajStart = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+  const dataDnia = n => new Date(S.rok, 11, n);
+  const dniDo = n => Math.round((dataDnia(n) - dzisiajStart()) / 86400000);
+  const odblokowane = n => PODGLAD || dniDo(n) <= 0;
+  const dniSlowo = n => n === 1 ? "dzień" : "dni";
+
+  // ---------- nagłówek ----------
+  document.getElementById("dla").textContent = "dla Ciebie, " + S.imie;
+  const status = document.getElementById("status");
+  const ileDo1 = dniDo(1);
+  const dzisNr = (new Date().getMonth() === 11 && new Date().getFullYear() === S.rok) ? new Date().getDate() : 0;
+  if (PODGLAD) status.innerHTML = `<span class="serce">👀</span> Tryb podglądu – wszystko odblokowane`;
+  else if (ileDo1 > 0) status.innerHTML = `<span class="serce">❤️</span> Pierwsze okienko za ${ileDo1} ${dniSlowo(ileDo1)}`;
+  else if (dzisNr >= 1 && dzisNr <= 24) status.innerHTML = `<span class="serce">❤️</span> Dziś czeka okienko nr ${dzisNr}`;
+  else status.innerHTML = `<span class="serce">🎄</span> Wesołych Świąt, ${S.imie}!`;
+  document.getElementById("stopka").textContent = "z miłością, " + S.podpis;
+
+  // ---------- lampki ----------
+  const lampki = document.getElementById("lampki");
+  const kolLamp = ["#ff4d5e", "#ffd25e", "#5effa1", "#5ec8ff", "#ff8fe0"];
+  const ileLamp = Math.max(10, Math.round(innerWidth / 38));
+  for (let i = 0; i < ileLamp; i++) {
+    const l = document.createElement("span");
+    l.className = "lampka";
+    l.style.setProperty("--c", kolLamp[i % kolLamp.length]);
+    l.style.setProperty("--d", (Math.random() * 1.6).toFixed(2) + "s");
+    lampki.appendChild(l);
+  }
+
+  // ---------- okienka ----------
+  const siatka = document.getElementById("kalendarz");
+  KOLEJNOSC.forEach((n, i) => {
+    const info = DANE[n] || { typ: "list" };
+    const b = document.createElement("button");
+    b.className = "okienko";
+    b.dataset.dzien = n;
+    b.style.setProperty("--opoz", (0.5 + i * 0.045).toFixed(3) + "s");
+    b.style.setProperty("--kolor", n === 24 ? "linear-gradient(150deg,#f3c969,#b5791f)" : KOLORY[(n * 5) % KOLORY.length]);
+    b.setAttribute("aria-label", "Okienko " + n);
+    b.innerHTML = `
+      <div class="wnetrze"><span class="ikona">${IKONY[info.typ] || "🎁"}</span><span class="maly-nr">${n}</span></div>
+      <div class="drzwi">
+        <div class="przod">
+          ${odblokowane(n) ? "" : '<span class="klodka">🔒</span>'}
+          <span class="numer">${n}</span>
+          <span class="ozdoba">${n === 24 ? "🌟" : OZDOBY[(n * 3) % OZDOBY.length]}</span>
+        </div>
+        <div class="tyl"></div>
+      </div>`;
+    if (otwarte.has(n) && odblokowane(n)) b.classList.add("otwarte");
+    if (!odblokowane(n)) b.classList.add("zamkniete");
+    if (!PODGLAD && n === dzisNr && !otwarte.has(n)) b.classList.add("dzis");
+    b.addEventListener("click", () => kliknij(b, n));
+    siatka.appendChild(b);
+  });
+
+  function kliknij(b, n) {
+    if (!odblokowane(n)) {
+      b.classList.remove("trzes"); void b.offsetWidth; b.classList.add("trzes");
+      const d = dniDo(n);
+      toast(d === 1 ? "Cierpliwości! To okienko otworzysz jutro 🤫" : `Jeszcze nie teraz! Zostało ${d} ${dniSlowo(d)} ⏳`);
+      wibruj(60);
+      return;
+    }
+    if (b.classList.contains("otwarte")) { pokaz(n); return; }
+    b.classList.add("otwarte");
+    b.classList.remove("dzis");
+    otwarte.add(n); zapisz();
+    wibruj([20, 40, 20]);
+    const r = b.getBoundingClientRect();
+    setTimeout(() => wybuch(r.left + r.width / 2, r.top + r.height / 2, n === 24 ? 70 : 34), 350);
+    setTimeout(() => pokaz(n), 1050);
+  }
+
+  // ---------- modal ----------
+  const modal = document.getElementById("modal");
+  const karta = document.getElementById("karta");
+  let sprzataj = null;
+
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const brak = plik => `<div class="brak"><b>📁</b>Tu pojawi się niespodzianka.<br>Brakuje pliku <code>${esc(plik || "?")}</code><br><small>Wrzuć go do folderu <code>kalendarz/media</code></small></div>`;
+
+  function pokaz(n) {
+    const d = DANE[n] || { typ: "list", tytul: "Niespodzianka", tekst: "❤️" };
+    let tresc = "";
+    if (d.typ === "zdjecie") tresc = `<div><div class="polaroid"><img alt="${esc(d.tytul)}" src="${esc(d.plik)}"></div></div>`;
+    else if (d.typ === "glosowka") tresc = `<div class="glos"><button class="graj" aria-label="Odtwórz">▶</button><div class="fale"></div><span class="czas">0:00</span><audio preload="metadata" src="${esc(d.plik)}"></audio></div>`;
+    else if (d.typ === "filmik") tresc = `<div class="film"><video src="${esc(d.plik)}" controls playsinline preload="metadata"></video></div>`;
+    else tresc = `<div class="list"><span class="pisane"></span><span class="kursor"></span><span class="podpis">${esc(S.podpis)}</span></div>`;
+
+    karta.innerHTML = `
+      <button class="zamknij" aria-label="Zamknij">✕</button>
+      <div class="dzien">${n} grudnia</div>
+      <h2 id="m-tytul">${esc(d.tytul || "Niespodzianka")}</h2>
+      ${tresc}
+      ${d.tekst && d.typ !== "list" ? `<p class="opis">${esc(d.tekst)}</p>` : ""}`;
+    karta.querySelector(".zamknij").onclick = zamknij;
+
+    sprzataj = null;
+    if (d.typ === "zdjecie") {
+      const img = karta.querySelector("img");
+      img.onload = () => img.classList.add("wywoluj");
+      img.onerror = () => img.closest(".polaroid").parentNode.innerHTML = brak(d.plik);
+    } else if (d.typ === "glosowka") sprzataj = odtwarzacz(karta.querySelector(".glos"), d.plik);
+    else if (d.typ === "filmik") {
+      const v = karta.querySelector("video");
+      v.onerror = () => v.closest(".film").outerHTML = brak(d.plik);
+      sprzataj = () => v.pause && v.pause();
+    } else sprzataj = maszyna(karta.querySelector(".list"), d.tekst || "");
+
+    modal.classList.add("otwarty");
+    karta.scrollTop = 0;
+    setTimeout(() => karta.querySelector(".zamknij")?.focus({ preventScroll: true }), 50);
+  }
+  function zamknij() {
+    if (!modal.classList.contains("otwarty")) return;
+    modal.classList.remove("otwarty");
+    if (sprzataj) sprzataj();
+    sprzataj = null;
+  }
+  modal.addEventListener("click", e => { if (e.target === modal) zamknij(); });
+  addEventListener("keydown", e => { if (e.key === "Escape") zamknij(); });
+
+  // ---------- odtwarzacz głosówki ----------
+  function odtwarzacz(el, plik) {
+    const audio = el.querySelector("audio"), btn = el.querySelector(".graj"), fale = el.querySelector(".fale"), czas = el.querySelector(".czas");
+    const N = 32, paski = [];
+    for (let i = 0; i < N; i++) {
+      const s = document.createElement("span");
+      const h = 20 + Math.abs(Math.sin(i * 1.7) * 60) + Math.random() * 20;
+      s.style.setProperty("--h", Math.min(100, h).toFixed(0) + "%");
+      s.style.setProperty("--d", (Math.random() * .9).toFixed(2) + "s");
+      fale.appendChild(s); paski.push(s);
+    }
+    const fmt = t => isFinite(t) ? Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0") : "0:00";
+    audio.addEventListener("loadedmetadata", () => czas.textContent = fmt(audio.duration));
+    audio.addEventListener("timeupdate", () => {
+      const p = audio.duration ? audio.currentTime / audio.duration : 0;
+      paski.forEach((s, i) => s.classList.toggle("przeszlo", i / N < p));
+      czas.textContent = fmt(audio.currentTime);
+    });
+    const stan = gra => { btn.classList.toggle("gra", gra); btn.textContent = gra ? "❚❚" : "▶"; btn.setAttribute("aria-label", gra ? "Pauza" : "Odtwórz"); };
+    audio.addEventListener("play", () => stan(true));
+    audio.addEventListener("pause", () => stan(false));
+    audio.addEventListener("ended", () => { stan(false); const r = btn.getBoundingClientRect(); wybuch(r.left + r.width / 2, r.top + r.height / 2, 16); });
+    audio.addEventListener("error", () => el.outerHTML = brak(plik));
+    btn.onclick = () => audio.paused ? audio.play().catch(() => {}) : audio.pause();
+    fale.onclick = e => { if (!audio.duration) return; const r = fale.getBoundingClientRect(); audio.currentTime = (e.clientX - r.left) / r.width * audio.duration; };
+    return () => audio.pause();
+  }
+
+  // ---------- liścik pisany na żywo ----------
+  function maszyna(el, tekst) {
+    const cel = el.querySelector(".pisane"), kursor = el.querySelector(".kursor"), podpis = el.querySelector(".podpis");
+    let i = 0, t;
+    const krok = () => {
+      cel.textContent = tekst.slice(0, ++i);
+      if (i < tekst.length) t = setTimeout(krok, /[.,!?]/.test(tekst[i - 1]) ? 260 : 28 + Math.random() * 30);
+      else { kursor.remove(); podpis.classList.add("widac"); }
+    };
+    t = setTimeout(krok, 600);
+    el.onclick = () => { clearTimeout(t); i = tekst.length - 1; krok(); };   // kliknięcie = pokaż całość
+    return () => clearTimeout(t);
+  }
+
+  // ---------- cząsteczki ----------
+  function wybuch(x, y, ile) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const zn = ["❤️", "💖", "✨", "⭐", "💕", "❄️", "🌟"];
+    for (let i = 0; i < ile; i++) {
+      const s = document.createElement("span");
+      s.className = "czastka";
+      s.textContent = zn[Math.floor(Math.random() * zn.length)];
+      s.style.fontSize = (12 + Math.random() * 18) + "px";
+      document.body.appendChild(s);
+      const kat = Math.random() * Math.PI * 2, sila = 80 + Math.random() * 180;
+      const dx = Math.cos(kat) * sila, dy = Math.sin(kat) * sila - 60;
+      const obr = (Math.random() - .5) * 720;
+      s.animate([
+        { transform: `translate(${x}px, ${y}px) translate(-50%,-50%) scale(.2)`, opacity: 1 },
+        { transform: `translate(${x + dx * .7}px, ${y + dy * .7}px) translate(-50%,-50%) scale(1.15) rotate(${obr / 2}deg)`, opacity: 1, offset: .45 },
+        { transform: `translate(${x + dx}px, ${y + dy + 160}px) translate(-50%,-50%) scale(.6) rotate(${obr}deg)`, opacity: 0 },
+      ], { duration: 1300 + Math.random() * 900, easing: "cubic-bezier(.2,.8,.4,1)" }).onfinish = () => s.remove();
+    }
+  }
+
+  // ---------- toast / wibracja ----------
+  const toastEl = document.getElementById("toast");
+  let toastT;
+  function toast(txt) { toastEl.textContent = txt; toastEl.classList.add("pokaz"); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove("pokaz"), 2600); }
+  function wibruj(w) { try { navigator.vibrate && navigator.vibrate(w); } catch (e) {} }
+
+  // ---------- śnieg ----------
+  const cv = document.getElementById("snieg"), ctx = cv.getContext("2d");
+  let W, H, platki = [];
+  const dpr = Math.min(2, devicePixelRatio || 1);
+  function rozmiar() {
+    W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr;
+    cv.style.width = W + "px"; cv.style.height = H + "px"; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const ile = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : Math.round(Math.min(160, W * H / 9000));
+    platki = Array.from({ length: ile }, () => nowy(true));
+  }
+  function nowy(start) {
+    return { x: Math.random() * W, y: start ? Math.random() * H : -10, r: .6 + Math.random() * 2.6, v: .3 + Math.random() * 1.1, f: Math.random() * Math.PI * 2, a: .35 + Math.random() * .6 };
+  }
+  function klatka() {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of platki) {
+      p.y += p.v; p.f += .012; p.x += Math.sin(p.f) * .45;
+      if (p.y > H + 10) Object.assign(p, nowy(false));
+      ctx.globalAlpha = p.a; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fillStyle = "#fff"; ctx.fill();
+    }
+    requestAnimationFrame(klatka);
+  }
+  addEventListener("resize", rozmiar);
+  rozmiar(); klatka();
+})();
+</script>
+</body>
+</html>
